@@ -216,9 +216,11 @@ Handle<Value> Ping(const Arguments &args)
     Local<Function> cb = Local<Function>::Cast(args[1]);
     unsigned cbargc = 1;
     Handle<Value> cbargv[cbargc];
+    int ret;
 
-    //TODO: Work
-    int ret = ping(ac);
+    Unlocker ul;
+    ret = ping(ac);
+    Locker l;
     if (ret > 0) {
         cbargv[0] = True();
     } else {

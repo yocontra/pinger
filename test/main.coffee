@@ -1,6 +1,6 @@
 pinger = require '../'
 should = require 'should'
-ben = require 'ben'
+benji = require 'benji'
 require 'mocha'
 
 describe 'pinger', ->
@@ -36,8 +36,8 @@ describe 'pinger', ->
       ours = (done) -> pinger.ping 'google.com', done
       theirs = (done) -> ping.sys.probe 'google.com', done
 
-      ben.async 50, ours, (ms) ->
+      benji.async 50, ours, (ms) ->
         console.log "pinger: #{ms}"
-        ben.async 50, theirs, (ms) ->
+        benji.async 50, theirs, (ms) ->
           console.log "node-ping: #{ms}"
           done()

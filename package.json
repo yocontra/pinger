@@ -13,7 +13,7 @@
    "devDependencies":{
       "mocha":"*",
       "should":"*",
-      "ben":"*",
+      "benji":"*",
       "ping":"*"
    },
    "scripts":{
