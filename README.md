@@ -25,9 +25,13 @@ pinger.ping 'google.com', (up) ->
   # up is true or false
 ```
 
-## Examples
+## Benchmarks
 
-You can view more examples in the [example folder.](https://github.com/wearefractal/pinger/tree/master/examples)
+```
+Averaged over 50 pings to google.com from a home network
+pinger: 83.6ms
+node-ping: 189.02ms
+```
 
 ## LICENSE
 

@@ -12,7 +12,9 @@
    },
    "devDependencies":{
       "mocha":"*",
-      "should":"*"
+      "should":"*",
+      "ben":"*",
+      "ping":"*"
    },
    "scripts":{
       "test":"mocha --compilers coffee:coffee-script",
