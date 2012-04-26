@@ -207,32 +207,36 @@ Handle<Value> Ping(const Arguments &args)
 
     // Check args
     ARG_CHECK_STRING(0, 'host');
-    ARG_CHECK_FUNCTION(1, 'callback');
+    ARG_CHECK_OPTIONAL_FUNCTION(1, 'callback');
 
     String::Utf8Value host(args[0]->ToString());
     const char* ac = *host;
 
-    //Set up callback
-    Local<Function> cb = Local<Function>::Cast(args[1]);
-    unsigned cbargc = 1;
-    Handle<Value> cbargv[cbargc];
+    // Do ping
     int ret;
-
     Unlocker ul;
     ret = ping(ac);
     Locker l;
+    Handle<Boolean> res;
     if (ret > 0) {
-        cbargv[0] = True();
+        res = True();
     } else {
-        cbargv[0] = False();
+        res = False();
     }
-    //Run callback
-    TryCatch try_catch;
-    cb->Call(Context::GetCurrent()->Global(), cbargc, cbargv);
-    if (try_catch.HasCaught()) {
-        FatalException(try_catch);
+
+    if (args.Length() > 1){
+      //Set up callback
+      Local<Function> cb = Local<Function>::Cast(args[1]);
+      unsigned cbargc = 1;
+      Handle<Value> cbargv[cbargc];
+      cbargv[0] = res;
+
+      //Run callback
+      cb->Call(Context::GetCurrent()->Global(), cbargc, cbargv);
+      return scope.Close(Undefined());
+    } else {
+      return scope.Close(res);
     }
-    return scope.Close(Undefined());
 }
 
 extern "C" {

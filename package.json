@@ -1,7 +1,7 @@
 {
    "name":"pinger",
    "description":"Native ICMP Ping",
-   "version":"0.0.1",
+   "version":"0.0.2",
    "homepage":"http://github.com/wearefractal/pinger",
    "repository":"git://github.com/wearefractal/pinger.git",
    "author":"Fractal <contact@wearefractal.com> (http://wearefractal.com/)",

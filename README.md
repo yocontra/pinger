@@ -21,6 +21,10 @@
 ```coffee-script
 pinger = require 'pinger'
 
+# Synchronous
+up = pinger.ping 'google.com'
+
+# Asynchronous
 pinger.ping 'google.com', (up) ->
   # up is true or false
 ```
