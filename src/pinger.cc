@@ -227,9 +227,10 @@ Handle<Value> Ping(const Arguments &args)
     if (args.Length() > 1){
       //Set up callback
       Local<Function> cb = Local<Function>::Cast(args[1]);
-      unsigned cbargc = 1;
+      unsigned cbargc = 2;
       Handle<Value> cbargv[cbargc];
       cbargv[0] = res;
+      cbargv[1] = Local<Value>::New(Number::New(ret));
 
       //Run callback
       cb->Call(Context::GetCurrent()->Global(), cbargc, cbargv);
