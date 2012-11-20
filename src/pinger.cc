@@ -25,6 +25,10 @@ using namespace v8;
 using namespace node;
 using namespace std;
 
+typedef struct {
+  int ret;
+  in_addr ip;
+} PingResponse;
 
 // This ICMP code was written by somebody else
 // Slight modifications were made by me to remove logging/integrate with V8
@@ -37,7 +41,7 @@ uint16_t in_cksum(uint16_t *addr, unsigned len);
 #define MAXICMPLEN  76
 #define MAXPACKET (65536 - 60 - ICMP_MINLEN)/* max packet size */
 
-int ping(const char* targ)
+PingResponse ping(const char* targ)
 {
 
   int s, i, cc, packlen, datalen = DEFDATALEN;
@@ -48,7 +52,8 @@ int ping(const char* targ)
   char hnamebuf[MAXHOSTNAMELEN];
   string hostname;
   struct icmp *icp;
-  int ret, fromlen, hlen;
+  int fromlen, hlen;
+  PingResponse ret;
   fd_set rfds;
   struct timeval tv;
   int retval;
@@ -61,16 +66,21 @@ int ping(const char* targ)
   // try to convert as dotted decimal address, else if that fails assume it's a hostname
   to.sin_addr.s_addr = inet_addr(targ);
   if (to.sin_addr.s_addr != (u_int)-1)
+  {
     hostname = string(targ);
-  else 
+    ret.ip = to.sin_addr;
+  }
+  else
   {
     hp = gethostbyname(targ);
     if (!hp)
     {
-      return -1;
+      ret.ret = -1;
+      return ret;
     }
     to.sin_family = hp->h_addrtype;
     bcopy(hp->h_addr, (caddr_t)&to.sin_addr, hp->h_length);
+    ret.ip = to.sin_addr;
     strncpy(hnamebuf, hp->h_name, sizeof(hnamebuf) - 1);
     hostname = hnamebuf;
   }
@@ -78,13 +88,15 @@ int ping(const char* targ)
   if ( (packet = (u_char *)malloc((u_int)packlen)) == NULL)
   {
     cerr << "malloc error\n";
-    return -1;
+    ret.ret = -1;
+    return ret;
   }
 
   if ( (s = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0)
   {
     perror("socket"); /* probably not running as superuser */
-    return -1;
+    ret.ret = -1;
+    return ret;
   }
 
   icp = (struct icmp *)outpack;
@@ -120,23 +132,29 @@ int ping(const char* targ)
     if (retval == -1)
     {
       perror("select()");
-      return -1;
+      ret.ret = -1;
+      close(s);
+      return ret;
     }
     else if (retval)
     {
       fromlen = sizeof(sockaddr_in);
-      if ( (ret = recvfrom(s, (char *)packet, packlen, 0,(struct sockaddr *)&from, (socklen_t*)&fromlen)) < 0)
+      if ( (ret.ret = recvfrom(s, (char *)packet, packlen, 0,(struct sockaddr *)&from, (socklen_t*)&fromlen)) < 0)
       {
         perror("recvfrom error");
-        return -1;
+        ret.ret = -1;
+        close(s);
+        return ret;
       }
 
       // Check the IP header
       ip = (struct ip *)((char*)packet); 
       hlen = sizeof( struct ip ); 
-      if (ret < (hlen + ICMP_MINLEN)) 
+      if (ret.ret < (hlen + ICMP_MINLEN)) 
       { 
-        return -1; 
+        ret.ret = -1;
+        close(s);
+        return ret;
       } 
 
       // Now the ICMP part 
@@ -163,15 +181,20 @@ int ping(const char* targ)
 
       if(end_t < 1)
         end_t = 1;
-
-      return end_t;
+      close(s);
+      ret.ret = end_t;
+      return ret;
     }
     else
     {
-      return 0;
+      ret.ret = 0;
+      close(s);
+      return ret;
     }
   }
-  return 0;
+  ret.ret = 0;
+  close(s);
+  return ret;
 }
 
 uint16_t in_cksum(uint16_t *addr, unsigned len)
@@ -213,12 +236,12 @@ Handle<Value> Ping(const Arguments &args)
     const char* ac = *host;
 
     // Do ping
-    int ret;
+    PingResponse ret;
     Unlocker ul;
     ret = ping(ac);
     Locker l;
     Handle<Boolean> res;
-    if (ret > 0) {
+    if (ret.ret > 0) {
         res = True();
     } else {
         res = False();
@@ -227,11 +250,12 @@ Handle<Value> Ping(const Arguments &args)
     if (args.Length() > 1){
       //Set up callback
       Local<Function> cb = Local<Function>::Cast(args[1]);
-      unsigned cbargc = 2;
+      unsigned cbargc = 3;
       Handle<Value> cbargv[cbargc];
       cbargv[0] = res;
-      cbargv[1] = Local<Value>::New(Number::New(ret));
-
+      cbargv[1] = Local<Value>::New(Number::New(ret.ret));
+      char* host = inet_ntoa(ret.ip);
+      cbargv[2] = Local<Value>::New(String::New(host));
       //Run callback
       cb->Call(Context::GetCurrent()->Global(), cbargc, cbargv);
       return scope.Close(Undefined());
