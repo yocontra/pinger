@@ -133,6 +133,7 @@ PingResponse ping(const char* targ)
     {
       perror("select()");
       ret.ret = -1;
+      close(s);
       return ret;
     }
     else if (retval)
@@ -142,6 +143,7 @@ PingResponse ping(const char* targ)
       {
         perror("recvfrom error");
         ret.ret = -1;
+        close(s);
         return ret;
       }
 
@@ -151,6 +153,7 @@ PingResponse ping(const char* targ)
       if (ret.ret < (hlen + ICMP_MINLEN)) 
       { 
         ret.ret = -1;
+        close(s);
         return ret;
       } 
 
@@ -178,17 +181,19 @@ PingResponse ping(const char* targ)
 
       if(end_t < 1)
         end_t = 1;
-
+      close(s);
       ret.ret = end_t;
       return ret;
     }
     else
     {
       ret.ret = 0;
+      close(s);
       return ret;
     }
   }
   ret.ret = 0;
+  close(s);
   return ret;
 }
 
