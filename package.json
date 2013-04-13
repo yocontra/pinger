@@ -16,12 +16,13 @@
       "benji":"*",
       "ping":"*"
    },
-   "scripts":{
-      "test":"mocha --compilers coffee:coffee-script",
-      "install":"node-waf configure build"
-   },
+  "scripts": {
+    "build": "node-gyp clean configure build",
+    "test": "mocha --compilers coffee:coffee-script",
+    "install": "node-gyp rebuild"
+  },
    "engines":{
-      "node":">= 0.4.0"
+      "node":">= 0.8.0"
    },
    "licenses":[
       {
