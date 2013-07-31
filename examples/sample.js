@@ -1,0 +1,2 @@
+var APPNAME = require('../');
+

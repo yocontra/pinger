@@ -10,7 +10,7 @@
 </tr>
 <tr>
 <td>Description</td>
-<td>NOTHING HERE YET</td>
+<td>DESCRIPTIONHERE</td>
 </tr>
 <tr>
 <td>Node Version</td>
@@ -21,7 +21,7 @@
 ## Usage
 
 ```javascript
-NOTHING HERE YET
+EXAMPLEHERE
 ```
 
 ## Examples
