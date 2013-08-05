@@ -1,14 +1,15 @@
 {
-   "name":"APPNAME",
-   "description":"DESCRIPTIONHERE",
+   "name":"pinger",
+   "description":"Dead simple asynchronous ping",
    "version":"0.0.1",
-   "homepage":"http://github.com/wearefractal/APPNAME",
-   "repository":"git://github.com/wearefractal/APPNAME.git",
+   "homepage":"http://github.com/wearefractal/pinger",
+   "repository":"git://github.com/wearefractal/pinger.git",
    "author":"Fractal <contact@wearefractal.com> (http://wearefractal.com/)",
    "main":"./index.js",
+   "keywords": ["ping"],
    
    "dependencies":{
-      
+      "net-ping":"*"
    },
    "devDependencies":{
       "mocha":"*",
@@ -23,7 +24,7 @@
    "licenses":[
       {
          "type":"MIT",
-         "url":"http://github.com/wearefractal/APPNAME/raw/master/LICENSE"
+         "url":"http://github.com/wearefractal/pinger/raw/master/LICENSE"
       }
    ]
 }

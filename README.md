@@ -1,16 +1,16 @@
-[![Build Status](https://travis-ci.org/wearefractal/APPNAME.png?branch=master)](https://travis-ci.org/wearefractal/APPNAME)
+[![Build Status](https://travis-ci.org/wearefractal/pinger.png?branch=master)](https://travis-ci.org/wearefractal/pinger)
 
-[![NPM version](https://badge.fury.io/js/APPNAME.png)](http://badge.fury.io/js/APPNAME)
+[![NPM version](https://badge.fury.io/js/pinger.png)](http://badge.fury.io/js/pinger)
 
 ## Information
 
 <table>
 <tr> 
-<td>Package</td><td>APPNAME</td>
+<td>Package</td><td>pinger</td>
 </tr>
 <tr>
 <td>Description</td>
-<td>DESCRIPTIONHERE</td>
+<td>Dead simple asynchronous ping</td>
 </tr>
 <tr>
 <td>Node Version</td>
@@ -20,13 +20,19 @@
 
 ## Usage
 
+You have to run the process with sudo for this to work. I know - it sucks but you can't create ICMP sockets without root.
+
 ```javascript
-EXAMPLEHERE
+var ping = require('pinger');
+
+ping("google.com", function(err, ms) {
+  // ms = 78
+});
 ```
 
 ## Examples
 
-You can view more examples in the [example folder.](https://github.com/wearefractal/APPNAME/tree/master/examples)
+You can view more examples in the [example folder.](https://github.com/wearefractal/pinger/tree/master/examples)
 
 ## LICENSE
 
