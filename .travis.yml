@@ -1,5 +1,5 @@
 language: node_js
-script: "which npm"
+script: "sudo $(which npm) test"
 node_js:
   - 0.8
   - 0.9
